@@ -27,12 +27,13 @@ class MainScreen:
     # ── Navegación ─────────────────────────────────────────────────────────
 
     def _mostrar_vista(self, clase_vista, titulo: str):
-        tabla = clase_vista(self.conn, self.usuario).build()
+        # Las vistas ahora devuelven ft.Column (con barra de filtros + tabla)
+        vista_col = clase_vista(self.conn, self.usuario).build()
         self._contenido.controls.clear()
         self._contenido.controls.extend([
             ft.Text(titulo, size=20, weight=ft.FontWeight.BOLD),
             ft.Divider(),
-            tabla,
+            vista_col,
         ])
         self.page.update()
 
