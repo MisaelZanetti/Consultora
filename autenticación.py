@@ -1,14 +1,8 @@
-class AuthService:
-    """Servicio de autenticación contra la base de datos."""
-
+class ServicioAutenticacion:
     def __init__(self, conn):
         self.conn = conn
 
-    def login(self, username: str, password: str) -> dict | None:
-        """
-        Verifica credenciales en texto plano.
-        Retorna un dict con los datos del usuario o None si falla.
-        """
+    def iniciar_sesion(self, nombre_usuario: str, contrasena: str) -> dict | None:
         try:
             cursor = self.conn.cursor(dictionary=True)
             cursor.execute(
@@ -21,17 +15,15 @@ class AuthService:
                   AND u.password = %s
                   AND u.activo   = 1
                 """,
-                (username, password),
+                (nombre_usuario, contrasena),
             )
-            row = cursor.fetchone()
+            fila = cursor.fetchone()
             cursor.close()
-            return row
+            return fila
         except Exception as ex:
             print(f"[AUTH] Error: {ex}")
             return None
 
 
-# ── Helper de módulo (compatibilidad con auth.login() existente) ──────────────
-
-def login(conn, username: str, password: str) -> dict | None:
-    return AuthService(conn).login(username, password)
+def login(conn, nombre_usuario: str, contrasena: str) -> dict | None:
+    return ServicioAutenticacion(conn).iniciar_sesion(nombre_usuario, contrasena)
